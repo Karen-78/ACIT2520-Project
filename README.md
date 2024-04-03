@@ -1,6 +1,8 @@
 Breakdown of work:
-Mar 28 -Apr 4 (First Sprint)
-Karen Yan:
+
+// Mar 28 -Apr 4 (First Sprint)
+// Karen Yan:
+
 I worked on the following tasks: 
 - Completed the "Edit" and "Delete" reminder tasks. 
 - Incorporated the Passport Lab login screen into the Reminder App. 
