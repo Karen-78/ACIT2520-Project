@@ -1,12 +1,18 @@
-// THIS IS A TEST - K
-// another test 
-
 const express = require("express");
 const app = express();
 const path = require("path");
 const ejsLayouts = require("express-ejs-layouts");
 const reminderController = require("./controller/reminder_controller");
 const authController = require("./controller/auth_controller");
+const passport = require("./middleware/passport");
+const authRoute = require("./routes/authRoute");
+const indexRoute = require("./routes/indexRoute");
+const { ensureAuthenticated } = require("./middleware/checkAuth");
+
+const session = require("express-session");
+
+const FileStore = require('session-file-store')(session);
+const fileStoreOptions = {}; 
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -14,10 +20,45 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(ejsLayouts);
 
+
 app.set("view engine", "ejs");
 
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false,
+    store: new FileStore(fileStoreOptions),
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  })
+);
+
+app.use(passport.session());
+app.use(passport.initialize());
+
+app.use((req, res, next) => {
+  console.log(`User details are: `);
+  console.log(req.user);
+
+  console.log("Entire session object:");
+  console.log(req.session);
+
+  console.log(`Session details are: `);
+  console.log(req.session.passport);
+  next();
+});
+
+app.use("/", indexRoute);
+app.use("/auth", authRoute);
+// app.use("/reminder", authRoute);
+
 // Routes start here
-app.get("/reminders", reminderController.list);
+// reminderController is from the file ./controller/reminder_controller
+app.get("/reminders", reminderController.checkAdmin, reminderController.list); // when user goes to localhost:3001/reminders
 app.get("/reminder/new", reminderController.new);
 app.get("/reminder/:id", reminderController.listOne);
 app.get("/reminder/:id/edit", reminderController.edit);
@@ -28,12 +69,26 @@ app.post("/reminder/delete/:id", reminderController.delete);
 
 // 👌 Ignore for now
 app.get("/register", authController.register);
-app.get("/login", authController.login);
+app.get("/auth/login", authController.login);
 app.post("/register", authController.registerSubmit);
-app.post("/login", authController.loginSubmit);
+app.post("/auth/login", authController.loginSubmit);
+
+app.get("/admin", ensureAuthenticated,  (req, res) => {
+  const sessionId = req.sessionID;
+  const store = req.sessionStore;
+  res.render("admin", {
+    sessionId: sessionId,
+    userID: req.user.id,
+    user: req.user,
+    allSessions: store.all(error, sessionId)
+    // storeAll: store.all
+  });
+  // console.log(allSessions)
+});
 
 app.listen(3001, function () {
   console.log(
     "Server running. Visit: http://localhost:3001/reminders in your browser 🚀"
   );
 });
+
