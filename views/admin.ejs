@@ -1,0 +1,11 @@
+<h1 class="mt-4">Dashboard</h1>
+<p class="lead mb-3">Welcome <%= user.name %> <%= user.username %></p>
+
+<% allSessions.forEach(function (each) { %>
+    <p> Current Active Sessions: </p>
+    <p> SessionID: <%= each.sessionId %> </p>
+    <p> userID: <%= each.userID %> </p>
+<% }) %>
+
+<a href="/auth/revoke" class="btn btn-secondary">Revoke Session</a>
+

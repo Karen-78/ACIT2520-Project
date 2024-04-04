@@ -1,5 +1,6 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+<<<<<<< HEAD
 const userController = require("../controllers/userController");
 const { database } = require("../models/userModel");
 // const GithubStrategy = require("passport-github2").Strategy;
@@ -33,12 +34,16 @@ const { database } = require("../models/userModel");
 //   }
 
 // ))
+=======
+const userController = require("../controller/userController");
+>>>>>>> cb9a79db9f42ccf82e2e6a099a655434bd14f83e
 
 const localLogin = new LocalStrategy(
   {
     usernameField: "email",
     passwordField: "password",
   },
+<<<<<<< HEAD
   //默认是username和password，如果你想用email和password，就要改成email和password
   //如果你就是用username和password，就不用写这个
   (email, password, done) => {
@@ -70,6 +75,23 @@ passport.serializeUser(function (user, done) {
 // you have to have these two functions
 passport.deserializeUser(function (id, done) {
   //因为serializeUser只存了user.id在session里面，所以我们要用这个id来找到user
+=======
+  (email, password, done) => {
+    const user = userController.getUserByEmailIdAndPassword(email, password);
+    return user
+      ? done(null, user)
+      : done(null, false, {
+          message: "Your login details are not valid. Please try again",
+        });
+  }
+);
+
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function (id, done) {
+>>>>>>> cb9a79db9f42ccf82e2e6a099a655434bd14f83e
   let user = userController.getUserById(id);
   if (user) {
     done(null, user);
@@ -78,6 +100,7 @@ passport.deserializeUser(function (id, done) {
   }
 });
 
+<<<<<<< HEAD
 
 
 module.exports = passport.use(localLogin);
@@ -100,3 +123,6 @@ session:{
 */
 
 
+=======
+module.exports = passport.use(localLogin);
+>>>>>>> cb9a79db9f42ccf82e2e6a099a655434bd14f83e
