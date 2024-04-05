@@ -75,7 +75,7 @@ I also de-bug an error:
 I worked on the following tasks: 
 - Completed the "Edit" and "Delete" reminder tasks. 
 - Incorporated the Passport Lab login screen into the Reminder App. 
-    - Now only logged in users can see the reminders and only logged in users can create reminders. 
+    - Now only logged in users can see the reminders and only logged in users can create reminders. However, there's a bug that the login screen is at /auth/login instead of /login right now. Working to fix that. 
     - Logged in users can only see and edit their own reminders, not other users
 - Incorporated a screen to revoke session. 
     - Users now have sessions made when they log in.
