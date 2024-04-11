@@ -7,19 +7,17 @@ const authController = require("./controller/auth_controller");
 const passport = require("./middleware/passport");
 const authRoute = require("./routes/authRoute");
 const indexRoute = require("./routes/indexRoute");
-const { ensureAuthenticated } = require("./middleware/checkAuth");
+const { ensureAuthenticated, isAdmin } = require("./middleware/checkAuth");
 
 const session = require("express-session");
 
-const FileStore = require('session-file-store')(session);
-const fileStoreOptions = {}; 
+// const FileStore = require('session-file-store')(session);
+// const fileStoreOptions = {path: './sessions'}; 
+
 
 app.use(express.static(path.join(__dirname, "public")));
-
 app.use(express.urlencoded({ extended: false }));
-
 app.use(ejsLayouts);
-
 
 app.set("view engine", "ejs");
 
@@ -28,7 +26,7 @@ app.use(
     secret: "secret",
     resave: false,
     saveUninitialized: false,
-    store: new FileStore(fileStoreOptions),
+    // store: new FileStore(fileStoreOptions), // ??? idk
     cookie: {
       httpOnly: true,
       secure: false,
@@ -49,6 +47,7 @@ app.use((req, res, next) => {
 
   console.log(`Session details are: `);
   console.log(req.session.passport);
+
   next();
 });
 
@@ -66,25 +65,18 @@ app.post("/reminder/", reminderController.create);
 // ⭐ Implement these two routes below!
 app.post("/reminder/update/:id", reminderController.update);
 app.post("/reminder/delete/:id", reminderController.delete);
+app.get("/admin", isAdmin, reminderController.admin);
 
 // 👌 Ignore for now
 app.get("/register", authController.register);
 app.get("/auth/login", authController.login);
 app.post("/register", authController.registerSubmit);
 app.post("/auth/login", authController.loginSubmit);
+app.get("/logout", authController.logout);
 
-app.get("/admin", ensureAuthenticated,  (req, res) => {
-  const sessionId = req.sessionID;
-  const store = req.sessionStore;
-  res.render("admin", {
-    sessionId: sessionId,
-    userID: req.user.id,
-    user: req.user,
-    allSessions: store.all(error, sessionId)
-    // storeAll: store.all
-  });
-  // console.log(allSessions)
-});
+app.post("/destroy/:sessionId", reminderController.destroySession);
+
+
 
 app.listen(3001, function () {
   console.log(

@@ -18,3 +18,15 @@ I researched about the following things:
 - Watched and took notes on "Understanding our Term Project Start Code Part 3"
 - Searched express-session npm, Google, Github, reddit, and many other sites on how to user store.all() to see all sessions for admin to revoke it. Was unable to find a working version. 
 - Watched and took notes on Passport Lecture (Week 11)
+
+Apr 5 - Apr 11 (Second Sprint)
+Karen Yan: 
+I worked on the following tasks: 
+- Made a button and implemented logout option 
+- Made a button and implemented destory session
+- Finally found the solution to use store.all 
+
+I researched about the following things:
+- Searched express-session npm how to implement store.all
+- Searched express-session npm how to implement session.destory
+- Searched express-session npm how to implement logout

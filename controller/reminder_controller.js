@@ -50,55 +50,11 @@ let remindersController = {
     });
 
     console.log(searchResult)
-
-    // if (searchResult != undefined) {
-        // Directly update the reminder at the found index
-        // searchResult.reminders.forEach(function(eachItem) {
-        //   eachItem.title = req.body.title;
-        //   eachItem.description = req.body.description;
-        //   eachItem.completed = req.body.completed;
-        // })
         searchResult.title = req.body.title;
         searchResult.description = req.body.description;
         searchResult.completed = req.body.completed === 'on' || req.body.completed === 'true';
         res.redirect("/reminders");
-    // } else {
-    //     res.status(404).send("Reminder not found");
-    // }
   },
-
-
-  // update: (req, res) => {
-  //   // implementation here 👈
-  //   let reminderToFind = req.params.id;
-  //   // change "database.cindy" to req.user (don't hard-code it)
-  //   let searchResult = req.user.reminders.find(function(reminder) {
-  //     return reminder.id === reminderToFind;
-  //   });
-
-  //   if (searchResult != undefined) {
-  //       // Directly update the reminder at the found index
-  //       searchResult.reminders.title = req.body.title;
-  //       searchResult.reminders.description = req.body.description;
-  //       searchResult.reminders.completed = req.body.completed === 'on' || req.body.completed === 'true'; // Handling boolean based on form input
-
-  //       res.redirect("/reminders");
-  //   } else {
-  //       res.status(404).send("Reminder not found");
-  //   }
-  // },
-
-
-//   let reminderToFind = req.params.id;
-//   let searchResult = req.user.reminders.find(function (reminder) {
-//     return reminder.id == reminderToFind;
-//   });
-//   if (searchResult != undefined) {
-//     res.render("reminder/single-reminder", { reminderItem: searchResult });
-//   } else {
-//     res.render("reminder/index", { reminders: req.user.reminders });
-//   }
-// },
 
   delete: (req, res) => {
       // implementation here 👈
@@ -122,8 +78,51 @@ let remindersController = {
   },
 
   admin: (req, res) => {
+    // Access the session store from the request object
+    const sessions = req.sessionStore.sessions;
 
+    // Initialize an array to hold session information
+    const sessionInfoList = [];
+
+    // Iterate over the sessions object
+    for (const sessionId in sessions) {
+      // Get the session data for the current session ID
+      const sessionData = JSON.parse(sessions[sessionId]);
+
+      // Extract relevant information such as session ID and user name
+      const sessionInfo = {
+        sessionId: sessionId,
+        userName: sessionData.passport ? sessionData.passport.user.username : "Unknown"
+      };
+
+      // Push session information into the array
+      sessionInfoList.push(sessionInfo);
+    }
+
+    // Now sessionInfoList contains an array of objects, each containing session ID and user name
+    console.log("infolist:", sessionInfoList);
+
+    // Render the admin view after retrieving sessions
+    res.render("admin", {
+      sessionIdsList: sessionInfoList, user: req.user
+    });
   },
+  
+  destroySession: (req, res) => {
+    const sessionId = req.params.sessionId;
+
+    req.sessionStore.destroy(sessionId, function(err) {
+      if (err) {
+        console.error('Error destroying session:', err);
+        res.status(500).send({ error: 'Failed to destroy session' });
+      } else {
+        console.log('Session destroyed successfully');
+        res.redirect('/admin');
+      }
+
+    });
+  },
+
 }
 
 module.exports = remindersController;

@@ -1,11 +1,18 @@
-<h1 class="mt-4">Dashboard</h1>
-<p class="lead mb-3">Welcome <%= user.name %> <%= user.username %></p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Page</title>
+</head>
+<body>
 
-<% allSessions.forEach(function (each) { %>
-    <p> Current Active Sessions: </p>
-    <p> SessionID: <%= each.sessionId %> </p>
-    <p> userID: <%= each.userID %> </p>
-<% }) %>
-
-<a href="/auth/revoke" class="btn btn-secondary">Revoke Session</a>
-
+  <h2>All Sessions:</h2>
+  <ul>
+    <% sessionIdsList.forEach(function(session) { %>
+      <li>SessionID: <%= session.sessionId %></li>
+      <form action="/destroy/<%= session.sessionId %>" method="post">
+        <button type="submit" class="btn btn-secondary">Revoke</button>
+      </form>
+    <% }); %>
+  </ul>
+</body>
+</html>

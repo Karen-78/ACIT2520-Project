@@ -20,4 +20,10 @@ router.get("/reminder/new", ensureAuthenticated, (req, res) => {
   });
 });
 
+// ensure only logged in users can see reminders
+// router.get("/admin", ensureAuthenticated, (req, res) => {
+//   res.render("admin", {
+//   });
+// });
+
 module.exports = router;

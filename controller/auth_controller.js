@@ -18,9 +18,19 @@ let authController = {
   },
 
   loginSubmit: (req, res) => {
-    
+    passport.authenticate("local", {
+      successRedirect: "/reminders",
+      failureRedirect: "/auth/login"
+    })
     // implement later
 
+  },
+
+  logout: (req, res) => {
+    req.logout(function(err) {
+      if (err) { return next(err); }
+      res.redirect('/auth/login');
+    });
   },
 
   registerSubmit: (req, res) => {
