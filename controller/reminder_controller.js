@@ -27,6 +27,7 @@ let remindersController = {
       title: req.body.title,
       description: req.body.description,
       completed: false,
+      
     };
     req.user.reminders.push(reminder);
     res.redirect("/reminders");
