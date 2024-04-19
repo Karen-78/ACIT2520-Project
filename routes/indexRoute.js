@@ -10,6 +10,7 @@ router.get("/", (req, res) => {
 router.get("/reminders", ensureAuthenticated, (req, res) => {
   res.render("reminder/index", {
     user: req.user,
+    isAuthenticated: req.isAuthenticated()
   });
 });
 
@@ -17,6 +18,7 @@ router.get("/reminders", ensureAuthenticated, (req, res) => {
 router.get("/reminder/new", ensureAuthenticated, (req, res) => {
   res.render("reminder/create", {
     user: req.user,
+    isAuthenticated: req.isAuthenticated()
   });
 });
 

@@ -1,23 +1,35 @@
 let model = require("../models/userModel");
 
+async function fetchImage(keyword) {
+  const imageUrl = `https://api.unsplash.com/search/photos?page=1&query=${keyword}&client_id=ch7E6YVNJeMa4Lz5AZBHdnuMr6s8YiPD_KLaOwzlGlw`
+  const response = await fetch(imageUrl);
+  const body = await response.json();
+  console.log(body.results[0].urls.small)
+  return body.results[0].urls.small
+
+}
+
 let remindersController = {
   list: (req, res) => { // returns a list of the user's reminders
-    res.render("reminder/index", { reminders: req.user.reminders });
+    res.render("reminder/index", { reminders: req.user.reminders, isAuthenticated: req.isAuthenticated() });
   },
 
   new: (req, res) => { // to create new reminder
-    res.render("reminder/create");
+    res.render("reminder/create", {isAuthenticated: req.isAuthenticated()});
   },
-
-  listOne: (req, res) => {
+  
+  listOne: async (req, res) => {
     let reminderToFind = req.params.id;
     let searchResult = req.user.reminders.find(function (reminder) {
       return reminder.id == reminderToFind;
     });
+    console.log('banner:', searchResult.banner);
+    let urlImage = await fetchImage(searchResult.banner)
+
     if (searchResult != undefined) {
-      res.render("reminder/single-reminder", { reminderItem: searchResult });
+      res.render("reminder/single-reminder", { reminderItem: searchResult , isAuthenticated: req.isAuthenticated(), urlImage:urlImage});
     } else {
-      res.render("reminder/index", { reminders: req.user.reminders });
+      res.render("reminder/index", { reminders: req.user.reminders, isAuthenticated: req.isAuthenticated(), user: req.user });
     }
   },
 
@@ -26,6 +38,7 @@ let remindersController = {
       id: req.user.reminders.length + 1,
       title: req.body.title,
       description: req.body.description,
+      banner: req.body.banner,
       completed: false,
     };
     req.user.reminders.push(reminder);
@@ -38,7 +51,7 @@ let remindersController = {
     let searchResult = req.user.reminders.find(function (reminder) {
       return reminder.id == reminderToFind;
     });
-    res.render("reminder/edit", { reminderItem: searchResult });
+    res.render("reminder/edit", { reminderItem: searchResult , isAuthenticated: req.isAuthenticated()});
   },
 
   update: (req, res) => {
@@ -94,7 +107,8 @@ let remindersController = {
 
     console.log("infolist:", sessionInfoList);
     res.render("admin", {
-      sessionIdsList: sessionInfoList, user: req.user
+      sessionIdsList: sessionInfoList, user: req.user, 
+      isAuthenticated: req.isAuthenticated()
     });
   },
   
@@ -114,6 +128,9 @@ let remindersController = {
   },
 
 }
+
+
+
 
 module.exports = remindersController;
 

@@ -72,6 +72,10 @@ app.get("/register", authController.register);
 app.get("/auth/login", authController.login);
 app.post("/register", authController.registerSubmit);
 app.post("/auth/login", authController.loginSubmit);
+
+
+
+
 app.get("/logout", authController.logout);
 
 app.post("/destroy/:sessionId", reminderController.destroySession);

@@ -23,6 +23,5 @@ function isUserValid(user, password) {
 
 module.exports = {
   getUserByEmailIdAndPassword,
-  getUserById
+  getUserById, 
 };
-

@@ -10,11 +10,13 @@ router.get("/login", forwardAuthenticated, (req, res) => res.render("login"));
 
 let authController = {
   login: (req, res) => {
-    res.render("auth/login");
+    res.render("auth/login", {
+      isAuthenticated: req.isAuthenticated(),
+    });
   },
 
   register: (req, res) => {
-    res.render("auth/register");
+    res.render("auth/register", {isAuthenticated: req.isAuthenticated()});
   },
 
   loginSubmit: (req, res) => {
